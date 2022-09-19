@@ -335,6 +335,18 @@ if test "$want_xdp" != no; then
                     if test "$LLC" != "no"; then
                         AC_SUBST(LLC)
                         build_ebpf=true
+                    else
+                        llc_candidates=$($CLANG --version | \
+                            awk '/ clang version/ {
+                            split($4, v, ".");
+                            printf("llc-%s.%s llc-%s llc", v[[1]], v[[2]], v[[1]])
+                        }')
+                        LLC=""
+                        AC_CHECK_PROGS([LLC], [$llc_candidates], [no])
+                        if test "$LLC" != "no"; then
+                            AC_SUBST(LLC)
+                            build_ebpf=true
+                        fi
                     fi
 
                  fi
