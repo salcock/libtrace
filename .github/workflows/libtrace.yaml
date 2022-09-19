@@ -49,7 +49,11 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update
-        sudo apt-get -y install flex bison libpcap0.8-dev libtool pkgconf autoconf automake m4 gcc clang llvm gcc-multilib
+        sudo apt install -y wget software-properties-common gnupg lsb-release
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+        sudo apt update
+        sudo apt-get -y install flex bison libpcap0.8-dev libtool pkgconf autoconf automake m4 gcc gcc-multilib
         sudo apt-get -y install build-essential dpdk-dev libelf-dev git libyaml-dev libssl-dev
         sudo apt-get -y install uthash-dev
     - name: Install PF_RING
@@ -68,6 +72,8 @@ jobs:
         repository: xdp-project/xdp-tools
     - name: Build/Install libxdp
       run: |
+        find /usr/bin/ -name clang* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1\2 \1/' | xargs -d '\n' -n 1 bash -c
+        find /usr/bin/ -name llc* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1\2 \1/' | xargs -d '\n' -n 1 bash -c
         cd xdp-tools
         ./configure
         sudo make -j 3 libxdp_install
