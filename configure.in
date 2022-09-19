@@ -311,7 +311,7 @@ if test "$want_xdp" != no; then
     if test "$elffound" = 1; then
         AC_CHECK_LIB(xdp, xsk_socket__create, xdpfound=1, xdpfound=0, -lelf)
 
-        if test "$xdpfound" = 1
+        if test "$xdpfound" = 1; then
             # check for libbpf
             AC_CHECK_LIB(bpf, bpf_map_update_elem, bpffound=1, bpffound=0,
             -lelf -lxdp)
