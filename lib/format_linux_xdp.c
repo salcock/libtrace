@@ -11,7 +11,7 @@
 #include "hash_toeplitz.h"
 
 #include <bpf/libbpf.h>
-#include <bpf/xsk.h>
+#include <xdp/xsk.h>
 #include <bpf/bpf.h>
 #include <poll.h>
 #include <errno.h>
