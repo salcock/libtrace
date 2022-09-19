@@ -64,7 +64,7 @@ jobs:
     - name: Checkout libxdp
       uses: actions/checkout@v2
       with:
-        path: libxdp-tools
+        path: xdp-tools
         repository: xdp-project/xdp-tools
     - name: Build/Install libxdp
       run: |
