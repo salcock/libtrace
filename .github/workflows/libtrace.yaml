@@ -61,6 +61,17 @@ jobs:
         sudo apt-get update
         sudo apt-get -y install pfring
         sudo ldconfig
+    - name: Checkout libxdp
+      uses: actions/checkout@v2
+      with:
+        path: libxdp-tools
+        repository: xdp-project/xdp-tools
+    - name: Build/Install libxdp
+      run: |
+        cd xdp-tools
+        ./configure
+        sudo make -j 3 libxdp_install
+        sudo ldconfig
     - name: Checkout Libbpf
       uses: actions/checkout@v2
       with:
