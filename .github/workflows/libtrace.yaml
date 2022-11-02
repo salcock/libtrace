@@ -72,8 +72,8 @@ jobs:
         repository: xdp-project/xdp-tools
     - name: Build/Install libxdp
       run: |
-        find /usr/bin/ -name clang* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1 \1\2/' | xargs -d '\n' -n 1 bash -c
-        find /usr/bin/ -name llc* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1 \1\2/' | xargs -d '\n' -n 1 bash -c
+        find /usr/bin/ -name clang* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1\2 \1/' | xargs -d '\n' -n 1 bash -c
+        find /usr/bin/ -name llc* | sed -E 's/^(\/usr\/bin\/.*)(\-[0-9]*)$/ln -s -v \1\2 \1/' | xargs -d '\n' -n 1 bash -c
         cd xdp-tools
         ./configure
         sudo make -j 3 libxdp_install
