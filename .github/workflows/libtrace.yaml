@@ -74,13 +74,13 @@ jobs:
       run: |
         cat << "EOF" > /tmp/ln.sh
         #!/bin/bash
-        for exe in `find /usr/bin/ -name clang-* | sort -r | grep '\-[0-9]*$'`; do
+        for exe in `find /usr/bin/ -name clang-* | sort -nr | grep '\-[0-9]*$'`; do
             newexe=`basename $exe | rev | cut -d '-' -f 1 --complement | rev`
             if [ ! -f /usr/local/bin/$newexe ]; then
                 ln -s -v $exe /usr/local/bin/$newexe
             fi
         done
-        for exe in `find /usr/bin/ -name llc-* | sort -r | grep '\-[0-9]*$'`; do
+        for exe in `find /usr/bin/ -name llc-* | sort -nr | grep '\-[0-9]*$'`; do
             newexe=`basename $exe | rev | cut -d '-' -f 1 --complement | rev`
             if [ ! -f /usr/local/bin/$newexe ]; then
                 ln -s -v $exe /usr/local/bin/$newexe
