@@ -321,6 +321,12 @@ if test "$want_xdp" != no; then
                 ADD_LDFLAGS="$ADD_LDFLAGS -lbpf -lelf -lxdp"
                 libtrace_xdp=true
 
+                AC_CHECK_LIB(bpf, bpf_xdp_query_id, bpfnewer=1, bpfnewer=0,
+                        -lelf -lxdp)
+                if test "$bpffound" = 1; then
+                    AC_DEFINE(HAVE_LIBBPF_XDP_QUERYID, 1, [Set to 1 if libbpf supports bpf_xdp_query_id])
+                fi
+
                 # check for requirements to build XDP eBPF kernel
                 AC_CHECK_PROG(CLANG, [clang], [clang], [no])
                 if test "$CLANG" != "no"; then
