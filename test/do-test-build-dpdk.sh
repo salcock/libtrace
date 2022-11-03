@@ -120,6 +120,7 @@ do
 			echo "CONFIG_RTE_LIBRTE_PMD_PCAP=y" >> "$DPDK_CONFIG"
 			echo "CONFIG_RTE_EAL_IGB_UIO=n" >> "$DPDK_CONFIG"
 			do_test make install T=x86_64-native-linuxapp-gcc \
+                                             DESTDIR=/usr/local/ \
 					     EXTRA_CFLAGS="-fcommon -fPIC -w -ggdb" -j $BUILD_THREADS \
 					     > build_stdout.txt 2> build_stderr.txt
 			ret=$?
