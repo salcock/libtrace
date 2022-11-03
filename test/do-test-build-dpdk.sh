@@ -19,7 +19,7 @@ fi
 
 TEST_DIR=$(pwd)
 LIBTRACE_DIR="$TEST_DIR"/../
-DPDK_DOWNLOAD_PATH=https://wand.nz/~rsanger/dpdk/
+DPDK_DOWNLOAD_PATH=https://libtraceteam.github.io/dpdk-testing/srcs
 DOWNLOAD_DIR="$TEST_DIR"/DPDK_source
 BUILD_DIR="$TEST_DIR"/DPDK_builds
 
@@ -52,68 +52,12 @@ $ERROR_MSG ($*)"
 	fi
 }
 
-# Old kernel version jessie 3.16
-declare -a dpdk_versions=(
-	"dpdk-1.7.1.tar.gz"
-	"dpdk-1.8.0.tar.gz"
-	"dpdk-2.0.0.tar.gz"
-	"dpdk-2.1.0.tar.gz"
-	"dpdk-2.2.0.tar.gz"
-	"dpdk-16.04.tar.gz"
-	"dpdk-16.07.2.tar.gz"
-	"dpdk-16.11.6.tar.gz"
-	)
-
-# Versions to check stretch linux 4.9
-declare -a dpdk_versions=(
-	"dpdk-2.2.0.tar.gz"
-	"dpdk-16.04.tar.gz"
-	"dpdk-16.07.2.tar.gz"
-	"dpdk-16.11.6.tar.gz"
-	"dpdk-17.02.1.tar.gz"
-	"dpdk-17.05.2.tar.gz"
-	"dpdk-17.08.2.tar.gz"
-	"dpdk-17.11.2.tar.gz"
-	"dpdk-18.02.1.tar.gz"
-	)
-
-# Versions to check buster linux 4.19
-# A full list of DPDK versions to check in buster
-declare -a dpdk_versions=(
-	"dpdk-16.11.11.tar.gz"
-	"dpdk-17.05.2.tar.gz"
-	"dpdk-17.08.2.tar.gz"
-	"dpdk-17.11.10.tar.gz"
-	"dpdk-18.02.2.tar.gz"
-	"dpdk-18.05.1.tar.gz"
-	"dpdk-18.08.1.tar.gz"
-	"dpdk-18.11.10.tar.gz"
-	"dpdk-19.02.tar.gz"
-	"dpdk-19.05.tar.gz"
-	"dpdk-19.08.2.tar.gz"
-	"dpdk-19.11.5.tar.gz"
-	"dpdk-20.02.tar.gz"
-	"dpdk-20.11.tar.gz"
-	)
-
-# Versions to check buster linux 4.19
-# Main LTS releases to check in buster
-declare -a dpdk_versions=(
-	"dpdk-16.11.11.tar.gz"
-	"dpdk-17.11.10.tar.gz"
-	"dpdk-18.11.10.tar.gz"
-	"dpdk-19.11.5.tar.gz"
-	"dpdk-20.02.tar.gz"
-	"dpdk-20.11.tar.gz"
-	"dpdk-21.11.tar.gz"
-	)
-
 while [[ $# -gt 0 ]]; do
 	dpdk_versions=()
         key="$1"
         case $key in
-        dpdk-16.11.11|dpdk-17.11.10|dpdk-18.11.10|dpdk-19.11.5|dpdk-20.02|dpdk-20.11|dpdk-21.11)
-		dpdk_versions+=("$key.tar.gz")
+        dpdk-16.11.11|dpdk-17.11.10|dpdk-18.11.11|dpdk-19.11.13|dpdk-20.11.6|dpdk-21.11.2|dpdk-22.07)
+		dpdk_versions+=("$key.tar.xz")
 		;;
 	*)
                 echo "Unknown version: $key"
@@ -138,7 +82,7 @@ do
 			DPDK_FAILED="$DPDK_FAILED
 Failed to download $dpdk_version"
 		else
-			tar xf "$dpdk_version"
+			tar xJf "$dpdk_version"
 			if [ $? -ne 0 ]; then
 				echo "ERROR: Failed to extract" "$dpdk_version"
 				DPDK_FAILED="$DPDK_FAILED
