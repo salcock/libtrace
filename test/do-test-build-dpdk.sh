@@ -149,6 +149,9 @@ do
 		DPDK_FAILED="$DPDK_FAILED
 Failed to build $dpdk_build
 	check $(pwd)/build_stderr.txt"
+                cat $(pwd)/build_stderr.txt
+                echo
+                cat $(pwd)/build_stdout.txt
 	fi
 	cd ..
 done
@@ -190,6 +193,7 @@ do
 ./configure for libtrace failed against $dpdk_build
 	Are you missing dependencies or do you need to run bootstrap.sh?
 	check ${OUTPUT_PREFIX}conf_err.txt"
+                cat ${OUTPUT_PREFIX}conf_err.txt
 		continue
 	fi
 	echo -n "	"
