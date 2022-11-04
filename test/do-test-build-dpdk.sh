@@ -130,7 +130,9 @@ do
 	else
 		echo "	Building using meson"
 		mkdir install
-		if CFLAGS="-fcommon -ggdb3 -w" do_test meson --prefix=$(pwd)/install build \
+		if CFLAGS="-fcommon -ggdb3 -w" do_test meson \
+                            --prefix=$(pwd)/install build \
+                            -Ddisable_drivers=baseband/*,bus/*,compress/*,crypto/*,dma/*,event/*,gpu/*,mempool/*,raw/*,regex/*,vdpa/*,net/* \
 				> build_stdout.txt 2> build_stderr.txt ; then
 			cd ./build
 			CFLAGS="-fcommon -ggdb3 -w" do_test meson install > ../build_stdout.txt 2> ../build_stderr.txt
