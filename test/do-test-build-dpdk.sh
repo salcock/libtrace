@@ -130,9 +130,22 @@ do
 	else
 		echo "	Building using meson"
 		mkdir install
+                cat << "EOF" > $(pwd)/drivers/net/meson.build
+drivers = [
+        'af_packet',
+        'pcap',
+        'null',
+        'vhost',
+        'virtio',
+]
+std_deps = ['ethdev', 'kvargs'] # 'ethdev' also pulls in mbuf, net, eal etc
+std_deps += ['bus_pci']         # very many PMDs depend on PCI, so make std
+std_deps += ['bus_vdev']        # same with vdev bus
+EOF
+
 		if CFLAGS="-fcommon -ggdb3 -w" do_test meson \
                             --prefix=$(pwd)/install build \
-                            -Ddisable_drivers=baseband/*,compress/*,crypto/*,dma/*,event/*,gpu/*,mempool/*,raw/*,regex/*,vdpa/* \
+                            -Ddisable_drivers=baseband/*,compress/*,crypto/*,dma/*,event/*,gpu/*,raw/*,regex/*,vdpa/* \
 				> build_stdout.txt 2> build_stderr.txt ; then
 			cd ./build
 			CFLAGS="-fcommon -ggdb3 -w" do_test meson install > ../build_stdout.txt 2> ../build_stderr.txt
