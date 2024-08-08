@@ -470,6 +470,12 @@ static int pcapfile_read_packet(libtrace_t *libtrace, libtrace_packet_t *packet)
     return sizeof(libtrace_pcapfile_pkt_hdr_t) + bytes_to_read;
 }
 
+#define IS_PCAP_NANOSECS(packet) \
+    (packet->trace && packet->trace->format && ( \
+                packet->trace->format->type == TRACE_FORMAT_PCAPFILE) && \
+                DATA(packet->trace) && \
+                trace_in_nanoseconds(&DATA(packet->trace)->header))
+
 static int pcapfile_write_packet(libtrace_out_t *out, libtrace_packet_t *packet)
 {
 
@@ -479,7 +485,7 @@ static int pcapfile_write_packet(libtrace_out_t *out, libtrace_packet_t *packet)
     }
 
     struct libtrace_pcapfile_pkt_hdr_t hdr;
-    struct timeval tv = trace_get_timeval(packet);
+    struct timespec ts = trace_get_timespec(packet);
     int numbytes;
     int ret;
     void *ptr;
@@ -516,7 +522,12 @@ static int pcapfile_write_packet(libtrace_out_t *out, libtrace_packet_t *packet)
             return -1;
         }
 
-        pcaphdr.magic_number = 0xa1b2c3d4;
+
+        if (IS_PCAP_NANOSECS(packet)) {
+            pcaphdr.magic_number = MAGIC2;
+        } else {
+            pcaphdr.magic_number = MAGIC1;
+        }
         pcaphdr.version_major = 2;
         pcaphdr.version_minor = 4;
         pcaphdr.thiszone = 0;
@@ -527,8 +538,13 @@ static int pcapfile_write_packet(libtrace_out_t *out, libtrace_packet_t *packet)
         wandio_wwrite(DATAOUT(out)->file, &pcaphdr, sizeof(pcaphdr));
     }
 
-    hdr.ts_sec = (uint32_t)tv.tv_sec;
-    hdr.ts_usec = (uint32_t)tv.tv_usec;
+    hdr.ts_sec = (uint32_t)ts.tv_sec;
+    if (IS_PCAP_NANOSECS(packet)) {
+        hdr.ts_usec = (uint32_t)ts.tv_nsec;
+    } else {
+        hdr.ts_usec = (uint32_t)ts.tv_nsec / 1000;
+    }
+
     hdr.caplen = trace_get_capture_length(packet);
     if (hdr.caplen >= LIBTRACE_PACKET_BUFSIZE) {
         trace_set_err_out(out, TRACE_ERR_BAD_PACKET,

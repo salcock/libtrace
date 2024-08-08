@@ -476,6 +476,7 @@ static inline void inspect_next_packet(etsisocket_t *sock,
     uint8_t *ptr = NULL;
     uint32_t reclen = 0;
     uint64_t current;
+    const char *keyenv;
 
     if (sock->sock == -1) {
         return;
@@ -531,9 +532,12 @@ static inline void inspect_next_packet(etsisocket_t *sock,
             et->activesources -= 1;
             return;
         }
-        /* Skip past KA */
-        libtrace_scb_advance_read(&(sock->recvbuffer), reclen);
-        return;
+        /* Check if display of keepalives is wanted; not by default */
+        keyenv = getenv("LIBTRACE_ETSILI_SHOW_KEEPALIVE");
+        if (!keyenv) {
+        	libtrace_scb_advance_read(&(sock->recvbuffer), reclen);
+        	return;
+        }
     }
 
     /* Get the timestamp */
@@ -724,6 +728,17 @@ etsilive_get_link_type(const libtrace_packet_t *packet UNUSED)
     return TRACE_TYPE_ETSILI;
 }
 
+static void etsilive_help(void)
+{
+    printf("etsilive format module: \n");
+    printf("Supported input URIs:\n");
+    printf("\tetsilive:hostname:port\n");
+    printf("\n");
+    printf("\te.g.: etsilive:127.0.0.1:3004\n");
+    printf("\n");
+}
+
+
 static struct libtrace_format_t etsilive = {
     "etsilive",
     "$Id$",
@@ -766,7 +781,7 @@ static struct libtrace_format_t etsilive = {
     NULL,                        /* get_statistics */
     NULL,                        /* get_fd */
     NULL,                        /* trace_event */
-    NULL,                        /* help */
+    etsilive_help,               /* help */
     NULL,                        /* next pointer */
     NON_PARALLEL(true)           /* TODO this can be parallel */
 };
