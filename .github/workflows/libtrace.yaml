@@ -45,6 +45,9 @@ jobs:
         sudo mkdir /dev/hugepages2M
         sudo mount -t hugetlbfs -o pagesize=1GB none /dev/hugepages1G
         sudo mount -t hugetlbfs -o pagesize=2M none /dev/hugepages2M
+        sudo chmod 777 /dev/hugepages
+        sudo chmod 777 /dev/hugepages1G
+        sudo chmod 777 /dev/hugepages2M
         sudo mount
     - name: Install Dependencies
       run: |
